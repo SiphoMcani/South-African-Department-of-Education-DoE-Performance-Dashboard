@@ -81,8 +81,6 @@ I built an interactive Power BI dashboard to answer 8 business questions.
 4. Interact with the slicers for Province and Year
 
 ## 👤 Author
-**[Sipho Mcani]**
-Highly motivated Data Analyst | Aspiring Data Scientist
+**Sipho Mcani**
 
----
-⭐ If you found this useful, give it a star!
+
