@@ -1,26 +1,89 @@
-let   
-    Source = Csv.Document(
-        Web.Contents("https://witscloud-my.sharepoint.com/personal/1928856_students_wits_ac_za/Documents/Apps/Microsoft Power Query/Uploaded Files/DoE_Dataset1.csv"), 
-        [Delimiter = ",", Columns = 9, Encoding = 65001, QuoteStyle = QuoteStyle.None]
-    ),   
-    #"Promoted headers" = Table.PromoteHeaders(Source, [PromoteAllScalars = true]),   
-    #"Filtered rows" = Table.SelectRows(#"Promoted headers", each [District] <> null and [District] <> ""),   
-    #"Trimmed text" = Table.TransformColumns(#"Filtered rows", {{"District", each Text.Trim(_), type nullable text}}),   
-    #"Changed column type" = Table.TransformColumnTypes(#"Trimmed text", {
-        {"Province", type text}, 
-        {"Number of Enrollment", Int64.Type}, 
-        {"Number of Male", Int64.Type}, 
-        {"Number of Female", type text}, 
-        {"Number Wrote", Int64.Type}, 
-        {"Number Passed", Int64.Type}, 
-        {"Number Failed", Int64.Type}, 
-        {" Number Passed with Bachelors ", Int64.Type}
-    }, "en-GB"),   
-    #"Replaced value" = Table.ReplaceValue(#"Changed column type", "Limpoo", "Limpopo", Replacer.ReplaceText, {"Province"}),   
-    #"Replaced value 1" = Table.ReplaceValue(#"Replaced value", "Lipopo", "Limpopo", Replacer.ReplaceText, {"Province"}),   
-    #"Replaced value 2" = Table.ReplaceValue(#"Replaced value 1", "Mpmalanga", "Mpumalanga", Replacer.ReplaceText, {"Province"}),   
-    #"Replaced value 3" = Table.ReplaceValue(#"Replaced value 2", "Mpumallnga", "Mpumalanga", Replacer.ReplaceText, {"Province"}),   
-    #"Replaced value 4" = Table.ReplaceValue(#"Replaced value 3", "NorthWest", "North West", Replacer.ReplaceText, {"Province"}),   
-    #"Replaced value 5" = Table.ReplaceValue(#"Replaced value 4", " ", "", Replacer.ReplaceText, {"Number of Female"}),   
-    #"Changed column type 1" = Table.TransformColumnTypes(#"Replaced value 5", {{"Number of Female", Int64.Type}}),   
-    #"Renamed columns" = Table.RenameColumns(#"Changed column type 1", {{" Number Passed with Bachelors ", "Number Passed with Bachelors"}})
+
+# South Africa Matric Pass Analysis | Limpopo, Mpumalanga & North West (2022-2024)
+
+![Power BI](https://img.shields.io/badge/Power%20BI-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
+![DAX](https://img.shields.io/badge/DAX-0078D4?style=for-the-badge)
+![Data Analysis](https://img.shields.io/badge/Data%20Analysis-2E8B57?style=for-the-badge)
+
+## 📌 Project Overview
+This project analyzes the Matric performance for 3 provinces: **Limpopo, Mpumalanga, and North West** from 2022 to 2024. 
+The goal was to understand pass rates, learner volumes, and Bachelor pass contribution to university entry.
+
+I built an interactive Power BI dashboard to answer 8 business questions.
+
+## 🎯 Key Questions Answered
+
+**Q1: Overall Pass Rate per Province**
+- Limpopo leads with a higher average pass rate than Mpumalanga and North West.
+
+**Q2: Learners Who Passed (Total Volume)**
+- Limpopo passed the highest total number of learners.
+
+**Q3: Total Learners Who Wrote**
+- Limpopo wrote the most, followed by Mpumalanga and North West.
+
+**Q4: Trend Over Time (2022-2024)**
+- Analyzed yearly trend - pass rates improved from 2022 to 2024 across all provinces.
+
+**Q5: Top Performing Districts by Pass Rate**
+- Districts like Mopani West (77.99%) and Capricorn North (74.46%) are top performers.
+
+**Q6: Average Learners Passed per District (Matrix Visual)**
+- **Mpumalanga: 1,278.28** average per district - Highest
+- Limpopo: 1,235.49
+- North West: 1,223.76
+- Lowest district: Dr Ruth Segomotsi Mompati (894.09)
+
+**Q7: Ranking All Districts by Pass Rate (RANKX)**
+- **Top 5 are ALL from Limpopo:**
+    1. Mopani West - 77.99%
+    2. Capricorn North - 74.46%
+    3. Mopani East - 74.22%
+    4. Vhembe East - 73.67%
+    5. Sekhukhune South - 72.61%
+- Bottom: Bojanala (66.49%) and Ehlanzeni (68.40%)
+- Gap between #1 and #15 = 11.5%
+
+**Q8: Bachelor Pass Contribution (Donut Chart)**
+- Limpopo contributes **64.19%** of all Bachelor passes
+- Mpumalanga + North West = 35.81% combined
+- This means Limpopo produces the most university-eligible learners.
+
+## 📊 Dashboard Preview
+![Dashboard Screenshot](./dashboard_screenshot.png)
+> *Add your Power BI screenshot here. Name it `dashboard_screenshot.png`*
+
+## 🛠️ Tools & Skills Used
+- **Power BI Desktop** - Data modeling & visualization
+- **DAX** - Measures created:
+    - `Pass Rate % = DIVIDE([Passed], [Wrote])`
+    - `Average Passed = AVERAGE([Passed])`
+    - `Rank = RANKX(ALL(District), [Pass Rate %])`
+    - `Bachelor Contribution % = DIVIDE([Bachelor Passes], [Total Bachelor Passes])`
+- **Data Cleaning** - Power Query
+- **Visuals:** Matrix, Bar Chart, Donut Chart, Line Chart, Table with Conditional Formatting
+
+## 📁 Dataset
+- Source: Matric Results Dataset (2022-2024)
+- Provinces: Limpopo, Mpumalanga, North West
+- Columns: Province, District, Year, Wrote, Passed, Bachelor Pass, Pass Rate
+
+## 💡 Key Insights
+1.  **Mpumalanga is most consistent** in average learners passed per district (1,278).
+2.  **Limpopo dominates quality** - 8 of top 10 districts by pass rate are in Limpopo.
+3.  **Limpopo drives higher education** - 64.19% of all Bachelor passes come from Limpopo alone.
+4.  Biggest opportunity is in North West - Bojanala district needs support at 66.49%.
+
+## 🚀 How to Run This Project
+1. Clone this repo
+2. Open the `.pbix` file in Power BI Desktop
+3. Refresh the data if needed
+4. Interact with the slicers for Province and Year
+
+## 👤 Author
+**[Your Name]**
+Highly motivated Data Analyst | Aspiring Data Scientist
+[LinkedIn Link] | [Portfolio Link]
+
+---
+⭐ If you found this useful, give it a star!
